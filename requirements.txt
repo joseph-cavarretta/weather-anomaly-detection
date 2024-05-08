@@ -1,0 +1,7 @@
+joblib==1.2.0
+meteostat==1.6.5
+numpy==1.23.2
+pandas==1.4.3
+scikit_learn==1.2.0
+statsmodels==0.13.5
+google-cloud-storage
