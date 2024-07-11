@@ -14,7 +14,7 @@ with Standard Deviation and Inter-Quartile Range.
 
 Trains an Isolation Forest model on the [50 year historical data](https://github.com/joseph-cavarretta/weather-anomaly-detection/blob/main/src/data/weather_data_historical.csv.gz). Hourly data is resampled into daily averages.
 Isolation Forest _contamination_ is set to 0.05, indicating the percentage of outliers we expect in this data set. Given my meteorological experience (none)
-this threshold seemed to work well for this data set, however someone with specific domain knowledge may be able to advise better on this.
+this threshold seemed to work well for this data set, however someone with specific domain knowledge would be able to advise better on this.
 
 Seasonal Trend Decomposition is applied to the data using LOESS to extract trend, seasonality, and residual components. The Isolation Forest
 is then trained on the residual component.
