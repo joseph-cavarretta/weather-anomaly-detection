@@ -10,6 +10,10 @@ and use the trained model to label new data points. The historical data used is 
 Includes various data prep, visuals, and model selection. Compares Isolation Forest model against using traditional anomaly detection methods
 with Standard Deviation and Inter-Quartile Range.
 
+<p align="left">
+<img width='800' src='https://github.com/joseph-cavarretta/photos/blob/main/pairwise.png'>
+</p>
+
 [train_model.py](https://github.com/joseph-cavarretta/weather-anomaly-detection/blob/main/src/train_model.py)
 
 Trains an Isolation Forest model on the [50 year historical data](https://github.com/joseph-cavarretta/weather-anomaly-detection/blob/main/src/data/weather_data_historical.csv.gz). Hourly data is resampled into daily averages.
@@ -18,6 +22,10 @@ this threshold seemed to work well for this data set, however someone with speci
 
 Seasonal Trend Decomposition is applied to the data using LOESS to extract trend, seasonality, and residual components. The Isolation Forest
 is then trained on the residual component.
+
+<p align="left">
+<img width='800' src='https://github.com/joseph-cavarretta/photos/blob/main/std.png'>
+</p>
 
 Running this file loads the original historical dataset and re-trains the model on it, saving the model to isolation_forest.pkl for use in
 weather_model.py. Processed historical data is saved as processed_weather_data_historical.csv.
