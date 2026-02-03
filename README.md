@@ -11,7 +11,7 @@ Includes various data prep, visuals, and model selection. Compares Isolation For
 with Standard Deviation and Inter-Quartile Range.
 
 <p align="left">
-<img width='800' src='https://github.com/joseph-cavarretta/photos/blob/main/pairwise.png'>
+<img width='800' src='assets/pairwise.png'>
 </p>
 
 [train_model.py](https://github.com/joseph-cavarretta/weather-anomaly-detection/blob/main/src/train_model.py)
@@ -24,7 +24,7 @@ Seasonal Trend Decomposition is applied to the data using LOESS to extract trend
 is then trained on the residual component.
 
 <p align="left">
-<img width='800' src='https://github.com/joseph-cavarretta/photos/blob/main/std.png'>
+<img width='800' src='assets/std.png'>
 </p>
 
 Running this file loads the original historical dataset and re-trains the model on it, saving the model to isolation_forest.pkl for use in
