@@ -166,3 +166,9 @@ cython_debug/
 stations_test.txt
 stations.txt
 */db/*
+
+# Model artifacts
+*.pkl
+
+# Scheduled run outputs
+src/data/scheduled_runs/

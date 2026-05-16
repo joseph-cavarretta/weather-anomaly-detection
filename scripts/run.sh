@@ -1,6 +1,7 @@
 #!/bin/bash
+ROOT="$(git rev-parse --show-toplevel)"
 docker run \
---rm \
---volume ~/projects/weather_model/src/data:/data \
---volume ~/projects/weather_model/src/data/scheduled_runs:/output \
-weather_model
+  --rm \
+  --volume "${ROOT}/src/data:/data" \
+  --volume "${ROOT}/src/data/scheduled_runs:/output" \
+  weather-model

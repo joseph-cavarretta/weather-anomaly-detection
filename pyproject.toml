@@ -1,0 +1,30 @@
+[project]
+name = "weather-anomaly-detection"
+version = "0.1.0"
+description = "Unsupervised anomaly detection on historical weather data using Isolation Forest"
+requires-python = ">=3.12"
+dependencies = [
+    "joblib>=1.4.0",
+    "meteostat>=1.6.5",
+    "numpy>=2.0.0",
+    "pandas>=2.2.0",
+    "scikit-learn>=1.5.0",
+    "statsmodels>=0.14.0",
+    "google-cloud-storage>=2.17.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.4.0",
+    "jupyter>=1.0.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true

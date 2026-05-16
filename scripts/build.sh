@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t weather_model ~/projects/weather_model
+docker build -t weather-model "$(git rev-parse --show-toplevel)"

@@ -1,21 +1,25 @@
-"""
-Created on Mon Mar 14 21:31:22 2022
-@author: joseph
-"""
-from datetime import datetime, timedelta
-from meteostat import Stations, Daily
-import pandas as pd
-import numpy as np
+import os
 import joblib
+import numpy as np
+import pandas as pd
+from datetime import datetime, timedelta
 from pathlib import Path
+from meteostat import Stations, Daily
 
 DS = datetime.now().strftime("%Y-%m-%d")
-MODEL_PATH = Path('src/isolation_forest.pkl')
-FILE_PATH = Path('/data/labelled_weather_data.csv')
-OUT_PATH = Path(f'/output/labelled_data_{DS}.csv')
+BASE_DIR = Path(__file__).parent
+MODEL_PATH = BASE_DIR / "isolation_forest.pkl"
+DATA_DIR = Path(os.getenv("DATA_DIR", str(BASE_DIR / "data")))
+OUT_DIR = Path(os.getenv("OUT_DIR", str(BASE_DIR / "data" / "scheduled_runs")))
+FILE_PATH = DATA_DIR / "labelled_weather_data.csv"
+OUT_PATH = OUT_DIR / f"labelled_data_{DS}.csv"
+
+# boulder, co weather station coordinates
+STATION_LAT = 40.014986
+STATION_LON = -105.270546
 
 
-def main():
+def main() -> None:
     df = read_data()
     start, end = get_data_start_end(df)
     new_data = get_new_data(start, end)
@@ -24,77 +28,59 @@ def main():
     print_confirmation(df, labelled_data, start)
 
 
-def read_data():
-    df = pd.read_csv(FILE_PATH)
-    return df
+def read_data() -> pd.DataFrame:
+    return pd.read_csv(FILE_PATH)
 
 
-def get_data_start_end(dataframe):
-    df = dataframe    
-    # if first time adding data:
-    if len(df) == 0:
-        now = datetime.now()
-        # start with yesterday's data
-        end = datetime(now.year,now.month,now.day) - timedelta(days=1)
-        start = end
-    else:
-        now = datetime.now()
-        start = pd.to_datetime(df['date'].iloc[-1]) + timedelta(days=1)
-        # capture all data up until yesterday
-        end = datetime(now.year,now.month,now.day) + timedelta(days=1)
+def get_data_start_end(dataframe: pd.DataFrame) -> tuple[datetime, datetime]:
+    now = datetime.now()
+    if len(dataframe) == 0:
+        end = datetime(now.year, now.month, now.day) - timedelta(days=1)
+        return end, end
+    start = pd.to_datetime(dataframe["date"].iloc[-1]) + timedelta(days=1)
+    end = datetime(now.year, now.month, now.day) + timedelta(days=1)
     return start, end
 
 
-def get_new_data(start, end):
-    stations = Stations()
-    # pull nearest weather station to coordinates from weather model training data
-    stations = stations.nearby(40.014986,-105.270546)
-    station = stations.fetch(1).reset_index()
-    station_id = station['id'][0]
-    # get daily data
-    data = Daily(
-        station_id,
-        start,
-        end
-        )
-    data = data.fetch()
-    data = data[['tavg']]
-    data.index.name = 'date'
+def get_new_data(start: datetime, end: datetime) -> pd.DataFrame:
+    stations = Stations().nearby(STATION_LAT, STATION_LON)
+    station_id = stations.fetch(1).reset_index()["id"][0]
+    data = Daily(station_id, start, end).fetch()
+    data = data[["tavg"]]
+    data.index.name = "date"
     data.reset_index(inplace=True)
-    data['date'] = data['date'].dt.strftime('%Y-%m-%d')
+    data["date"] = data["date"].dt.strftime("%Y-%m-%d")
     return data
 
 
-def label_new_data(dataframe):
+def label_new_data(dataframe: pd.DataFrame) -> pd.DataFrame:
     data = dataframe.copy()
     isolation_forest = joblib.load(MODEL_PATH)
-
-    test_data = np.array(data['tavg']).reshape(-1,1)
-    labels = isolation_forest.predict(test_data)
-
-    data['anomaly_score'] = labels
-    data['anomaly'] = np.where(data['anomaly_score'] == -1, True, False)
+    test_data: np.ndarray = np.array(data["tavg"]).reshape(-1, 1)
+    labels: np.ndarray = isolation_forest.predict(test_data)
+    data["anomaly_score"] = labels
+    data["anomaly"] = np.where(data["anomaly_score"] == -1, True, False)
     return data
-    
 
-def write_file(dataframe, labelled_data):
-    df = dataframe
-    df = pd.concat([df, labelled_data], ignore_index=True)
+
+def write_file(dataframe: pd.DataFrame, labelled_data: pd.DataFrame) -> None:
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    df = pd.concat([dataframe, labelled_data], ignore_index=True)
     df.to_csv(OUT_PATH, index=False)
 
 
-def print_confirmation(dataframe, labelled_data, start_date):
-    df = dataframe
-    start_date = start_date.strftime('%Y-%m-%d')
-    df = pd.concat([df, labelled_data], ignore_index=True)
-    total_anomalies = len(df.loc[df['anomaly'] == True])
-    df['date'] = pd.to_datetime(df['date'])
-    recent_anomalies = len(df.loc[(df['date'] > start_date) & (df['anomaly'] == True)])
-    #print("Weather file updated.")
-    print(f'There are {total_anomalies} days with anomalous weather logged')
-    print(f'New anomalies since {start_date}: {recent_anomalies}')
-    #print(f"Open {FILE_PATH} to check anomalies")
+def print_confirmation(
+    dataframe: pd.DataFrame, labelled_data: pd.DataFrame, start_date: datetime
+) -> None:
+    df = pd.concat([dataframe, labelled_data], ignore_index=True)
+    total_anomalies = len(df.loc[df["anomaly"] == True])
+    df["date"] = pd.to_datetime(df["date"])
+    recent_anomalies = len(
+        df.loc[(df["date"] > start_date.strftime("%Y-%m-%d")) & (df["anomaly"] == True)]
+    )
+    print(f"There are {total_anomalies} days with anomalous weather logged")
+    print(f"New anomalies since {start_date.strftime('%Y-%m-%d')}: {recent_anomalies}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

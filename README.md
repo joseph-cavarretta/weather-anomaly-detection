@@ -1,40 +1,75 @@
-## Unsupervised Anomaly Detection with Weather Data
+# Weather Anomaly Detection
 
-The purpose of this project is to label historical weather data, specifical mean daily temp, as anomolous or not,
-and use the trained model to label new data points. The historical data used is specifically for the town of Boulder, CO and is sourced from
-[Open Weather](https://home.openweathermap.org/). It contains hourly weather data from 1970 to 2020.
-
-### This project contains the following files:
-[weather_EDA.ipynb](https://github.com/joseph-cavarretta/weather-anomaly-detection/blob/main/src/weather_eda.ipynb)
-
-Includes various data prep, visuals, and model selection. Compares Isolation Forest model against using traditional anomaly detection methods
-with Standard Deviation and Inter-Quartile Range.
+Unsupervised anomaly detection on historical weather data using Isolation Forest. The model is trained on 50 years of daily temperature data for Boulder, CO, and uses Seasonal Trend Decomposition (STL/LOESS) to isolate the residual component before fitting.
 
 <p align="left">
 <img width='800' src='assets/pairwise.png'>
 </p>
 
-[train_model.py](https://github.com/joseph-cavarretta/weather-anomaly-detection/blob/main/src/train_model.py)
+## How It Works
 
-Trains an Isolation Forest model on the [50 year historical data](https://github.com/joseph-cavarretta/weather-anomaly-detection/blob/main/src/data/weather_data_historical.csv.gz). Hourly data is resampled into daily averages.
-Isolation Forest _contamination_ is set to 0.05, indicating the percentage of outliers we expect in this data set. Given my meteorological experience (none)
-this threshold seemed to work well for this data set, however someone with specific domain knowledge would be able to advise better on this.
-
-Seasonal Trend Decomposition is applied to the data using LOESS to extract trend, seasonality, and residual components. The Isolation Forest
-is then trained on the residual component.
+1. Hourly temperature data (1970–2020) is resampled to daily averages
+2. STL decomposition extracts the residual component (removes trend and seasonality)
+3. Isolation Forest is trained on the residuals with `contamination=0.05`
+4. The saved model labels new daily observations as anomalous or normal
 
 <p align="left">
 <img width='800' src='assets/std.png'>
 </p>
 
-Running this file loads the original historical dataset and re-trains the model on it, saving the model to isolation_forest.pkl for use in
-weather_model.py. Processed historical data is saved as processed_weather_data_historical.csv.
+## Stack
 
-[weather_model.py](https://github.com/joseph-cavarretta/weather-anomaly-detection/blob/main/src/weather_model.py)
+- **scikit-learn** — Isolation Forest
+- **statsmodels** — STL/LOESS seasonal decomposition
+- **meteostat** — fetches new daily weather data from the nearest station
+- **Docker** — containerized inference
+- **Apache Airflow** — weekly scheduled runs (`weather_dag.py`)
+- **Google Cloud Storage** — output archival
 
-Uses the Meteostat API to pull weather data from the closest weather station to the historical weather data that I could find.
-Checking this data against common weather outlets (such as Accuweather), shows some variation. Because of this, the new data that is pulled is not appended to
-the original historical data for now.
+## Quick Start
 
-Data is pulled starting from the last day in the [labelled_weather_data_csv](https://github.com/joseph-cavarretta/weather-anomaly-detection/blob/main/src/data/labelled_weather_data.csv.gz) file
-and ending yesterday. Using the Isolation Forest this data is labelled as anomalous or not and appended to the labelled weather data csv file.
+```bash
+# build the image
+make build
+
+# train the model on historical data (saves isolation_forest.pkl)
+make train
+
+# run inference on new data
+make run
+```
+
+## Project Structure
+
+```
+├── Dockerfile
+├── Makefile
+├── requirements.txt
+├── pyproject.toml
+├── weather_dag.py          # Airflow DAG for weekly scheduling
+├── src/
+│   ├── train_model.py      # trains Isolation Forest on historical data
+│   ├── weather_model.py    # loads model and labels new data
+│   ├── weather_eda.ipynb   # exploratory analysis and model selection
+│   └── data/
+│       ├── weather_data_historical.csv.gz
+│       ├── processed_weather_data_historical.csv.gz
+│       └── labelled_weather_data.csv.gz
+└── scripts/
+    ├── build.sh
+    ├── run.sh
+    └── upload_to_gcs.py    # archives labelled output to GCS
+```
+
+## Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `DATA_DIR` | Path to input data directory | `src/data` |
+| `OUT_DIR` | Path for labelled output files | `src/data/scheduled_runs` |
+| `GCS_BUCKET_NAME` | GCS bucket for archival (upload script) | required |
+| `WEATHER_MODEL_DIR` | Project root for Airflow DAG | `~/projects/weather-anomaly-detection` |
+
+## Dataset
+
+Historical weather data sourced from [Open Weather](https://home.openweathermap.org/) — hourly observations for Boulder, CO from 1970 to 2020. New daily data is pulled from the nearest Meteostat station to the historical data coordinates (40.01°N, 105.27°W).
