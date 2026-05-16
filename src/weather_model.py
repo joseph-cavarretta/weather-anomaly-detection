@@ -1,4 +1,3 @@
-import os
 import joblib
 import numpy as np
 import pandas as pd
@@ -6,20 +5,22 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from meteostat import Stations, Daily
 
+from config import get_settings
+
 DS = datetime.now().strftime("%Y-%m-%d")
+_settings = get_settings()
+
 BASE_DIR = Path(__file__).parent
 MODEL_PATH = BASE_DIR / "isolation_forest.pkl"
-DATA_DIR = Path(os.getenv("DATA_DIR", str(BASE_DIR / "data")))
-OUT_DIR = Path(os.getenv("OUT_DIR", str(BASE_DIR / "data" / "scheduled_runs")))
-FILE_PATH = DATA_DIR / "labelled_weather_data.csv"
-OUT_PATH = OUT_DIR / f"labelled_data_{DS}.csv"
+FILE_PATH = _settings.data_dir / "labelled_weather_data.csv"
+OUT_PATH = _settings.out_dir / f"labelled_data_{DS}.csv"
 
-# boulder, co weather station coordinates
 STATION_LAT = 40.014986
 STATION_LON = -105.270546
 
 
 def main() -> None:
+    """Run inference: fetch new weather data, label it, and append to history."""
     df = read_data()
     start, end = get_data_start_end(df)
     new_data = get_new_data(start, end)
@@ -29,20 +30,39 @@ def main() -> None:
 
 
 def read_data() -> pd.DataFrame:
+    """Load the existing labelled weather history."""
     return pd.read_csv(FILE_PATH)
 
 
 def get_data_start_end(dataframe: pd.DataFrame) -> tuple[datetime, datetime]:
+    """Return the start and end dates for the next data fetch.
+
+    Args:
+        dataframe: Existing labelled history. If empty, fetches yesterday only.
+
+    Returns:
+        Tuple of (start, end) datetimes for the meteostat query.
+    """
     now = datetime.now()
     if len(dataframe) == 0:
         end = datetime(now.year, now.month, now.day) - timedelta(days=1)
         return end, end
     start = pd.to_datetime(dataframe["date"].iloc[-1]) + timedelta(days=1)
+    # meteostat station data lags ~24h; end must be tomorrow to capture today
     end = datetime(now.year, now.month, now.day) + timedelta(days=1)
     return start, end
 
 
 def get_new_data(start: datetime, end: datetime) -> pd.DataFrame:
+    """Fetch daily average temperature from the nearest meteostat station.
+
+    Args:
+        start: First date to fetch.
+        end: Last date to fetch (exclusive of today due to station lag).
+
+    Returns:
+        DataFrame with columns: date, tavg.
+    """
     stations = Stations().nearby(STATION_LAT, STATION_LON)
     station_id = stations.fetch(1).reset_index()["id"][0]
     data = Daily(station_id, start, end).fetch()
@@ -54,6 +74,14 @@ def get_new_data(start: datetime, end: datetime) -> pd.DataFrame:
 
 
 def label_new_data(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """Apply the trained Isolation Forest to label new observations.
+
+    Args:
+        dataframe: DataFrame with tavg column from get_new_data.
+
+    Returns:
+        Input DataFrame with anomaly_score and anomaly columns added.
+    """
     data = dataframe.copy()
     isolation_forest = joblib.load(MODEL_PATH)
     test_data: np.ndarray = np.array(data["tavg"]).reshape(-1, 1)
@@ -64,14 +92,18 @@ def label_new_data(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def write_file(dataframe: pd.DataFrame, labelled_data: pd.DataFrame) -> None:
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    """Append newly labelled data to history and write to output path."""
+    _settings.out_dir.mkdir(parents=True, exist_ok=True)
     df = pd.concat([dataframe, labelled_data], ignore_index=True)
     df.to_csv(OUT_PATH, index=False)
 
 
 def print_confirmation(
-    dataframe: pd.DataFrame, labelled_data: pd.DataFrame, start_date: datetime
+    dataframe: pd.DataFrame,
+    labelled_data: pd.DataFrame,
+    start_date: datetime,
 ) -> None:
+    """Print a summary of total and new anomalies detected."""
     df = pd.concat([dataframe, labelled_data], ignore_index=True)
     total_anomalies = len(df.loc[df["anomaly"] == True])
     df["date"] = pd.to_datetime(df["date"])

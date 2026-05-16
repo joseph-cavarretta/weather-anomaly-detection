@@ -1,9 +1,11 @@
-import os
 from datetime import timedelta, datetime
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 
-PROJECT_DIR = os.getenv("WEATHER_MODEL_DIR", "~/projects/weather-anomaly-detection")
+from config import get_settings
+
+_settings = get_settings()
+PROJECT_DIR = _settings.weather_model_dir
 
 args = {
     "owner": "joe-cavarretta",
@@ -19,7 +21,7 @@ with DAG(
     dag_id="weather_model",
     default_args=args,
     description="Runs anomaly detection model on Boulder, CO recent weather",
-    schedule_interval="0 12 * * 1",  # mondays at noon
+    schedule_interval="0 12 * * 1",
 ) as dag:
     run_model = BashOperator(
         task_id="run_model",
