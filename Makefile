@@ -1,4 +1,17 @@
-.PHONY: build train run
+.PHONY: install lint format check build train run
+
+install:
+	uv sync
+
+lint:
+	uv run ruff check .
+
+format:
+	uv run ruff format .
+
+check:
+	uv run ruff check .
+	uv run ruff format --check .
 
 build:
 	docker build -t weather-model .
