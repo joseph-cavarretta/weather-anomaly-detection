@@ -1,5 +1,7 @@
 # Weather Anomaly Detection
 
+[![CI](https://github.com/joseph-cavarretta/weather-anomaly-detection/actions/workflows/ci.yml/badge.svg)](https://github.com/joseph-cavarretta/weather-anomaly-detection/actions/workflows/ci.yml)
+
 Unsupervised anomaly detection on historical weather data using Isolation Forest. The model is trained on 50 years of daily temperature data for Boulder, CO, and uses Seasonal Trend Decomposition (STL/LOESS) to isolate the residual component before fitting.
 
 <p align="left">

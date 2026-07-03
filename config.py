@@ -9,9 +9,12 @@ class Settings(BaseSettings):
 
     data_dir: Path = Field(default=Path("src/data"), description="Input data directory")
     out_dir: Path = Field(
-        default=Path("src/data/scheduled_runs"), description="Output directory for labelled files"
+        default=Path("src/data/scheduled_runs"),
+        description="Output directory for labelled files",
     )
-    gcs_bucket_name: str = Field(default="", description="GCS bucket for archival uploads")
+    gcs_bucket_name: str = Field(
+        default="", description="GCS bucket for archival uploads"
+    )
     weather_model_dir: Path = Field(
         default=Path("~/projects/weather-anomaly-detection"),
         description="Project root used by the Airflow DAG",
