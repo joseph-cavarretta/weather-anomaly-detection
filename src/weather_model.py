@@ -1,9 +1,10 @@
+from datetime import datetime, timedelta
+from pathlib import Path
+
 import joblib
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
-from pathlib import Path
-from meteostat import Stations, Daily
+from meteostat import Daily, Stations
 
 from config import get_settings
 
@@ -105,10 +106,10 @@ def print_confirmation(
 ) -> None:
     """Print a summary of total and new anomalies detected."""
     df = pd.concat([dataframe, labelled_data], ignore_index=True)
-    total_anomalies = len(df.loc[df["anomaly"] == True])
+    total_anomalies = len(df.loc[df["anomaly"]])
     df["date"] = pd.to_datetime(df["date"])
     recent_anomalies = len(
-        df.loc[(df["date"] > start_date.strftime("%Y-%m-%d")) & (df["anomaly"] == True)]
+        df.loc[(df["date"] > start_date.strftime("%Y-%m-%d")) & df["anomaly"]]
     )
     print(f"There are {total_anomalies} days with anomalous weather logged")
     print(f"New anomalies since {start_date.strftime('%Y-%m-%d')}: {recent_anomalies}")

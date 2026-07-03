@@ -1,9 +1,10 @@
-import joblib
-import pandas as pd
-import numpy as np
 from pathlib import Path
-from statsmodels.tsa.seasonal import STL
+
+import joblib
+import numpy as np
+import pandas as pd
 from sklearn.ensemble import IsolationForest
+from statsmodels.tsa.seasonal import STL
 
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
@@ -25,7 +26,9 @@ def load_data_and_format(path: Path) -> pd.DataFrame:
     raw_df.sort_values("dt_iso", inplace=True)
     raw_df.set_index("dt_iso", inplace=True)
 
-    df = raw_df.resample("D").agg({"temp": "mean"}).rename(columns={"temp": "mean_temp"})
+    df = (
+        raw_df.resample("D").agg({"temp": "mean"}).rename(columns={"temp": "mean_temp"})
+    )
     df["max_temp"] = raw_df["temp"].resample("D").max()
     df["min_temp"] = raw_df["temp"].resample("D").min()
 
