@@ -2,7 +2,7 @@
 annotated-types==0.7.0
 certifi==2026.6.17
 cffi==2.0.0 ; platform_python_implementation != 'PyPy'
-charset-normalizer==3.4.7
+charset-normalizer==3.4.8
 cryptography==49.0.0
 google-api-core==2.31.0
 google-auth==2.55.1
@@ -15,9 +15,9 @@ idna==3.18
 joblib==1.5.3
 meteostat==2.1.4
 narwhals==2.23.0
-numpy==2.5.0
+numpy==2.5.1
 packaging==26.2
-pandas==2.3.3
+pandas==3.0.3
 patsy==1.0.2
 proto-plus==1.28.0
 protobuf==7.35.1
@@ -25,11 +25,11 @@ pyasn1==0.6.3
 pyasn1-modules==0.4.2
 pycparser==3.0 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
 pydantic==2.13.4
-pydantic-core==2.46.4
+pydantic-core==2.47.0
 pydantic-settings==2.14.2
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.2
-pytz==2023.4
+pytz==2026.2
 requests==2.34.2
 scikit-learn==1.9.0
 scipy==1.18.0
