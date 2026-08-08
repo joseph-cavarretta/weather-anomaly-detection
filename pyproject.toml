@@ -5,21 +5,21 @@ description = "Unsupervised anomaly detection on historical weather data using I
 requires-python = ">=3.12"
 dependencies = [
     "joblib>=1.4.0",
-    "meteostat>=1.6.5,<2",
-    "numpy>=2.0.0",
-    "pandas>=2.2.0,<3",
+    "meteostat>=2.1.4,<3",
+    "numpy>=2.5.1",
+    "pandas>=3.0.5,<4",
     "pydantic>=2.0.0",
     "pydantic-settings>=2.0.0",
     "scikit-learn>=1.5.0",
     "statsmodels>=0.14.0",
-    "google-cloud-storage>=2.17.0",
+    "google-cloud-storage>=3.13.0",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=8.0.0",
-    "mypy>=1.0.0",
-    "ruff>=0.4.0",
+    "mypy>=2.3.0",
+    "ruff>=0.16.1",
     "jupyter>=1.0.0",
 ]
 
