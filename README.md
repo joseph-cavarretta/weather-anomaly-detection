@@ -46,7 +46,6 @@ make run
 ```
 ├── Dockerfile
 ├── Makefile
-├── requirements.txt
 ├── pyproject.toml
 ├── weather_dag.py          # Airflow DAG for weekly scheduling
 ├── src/
