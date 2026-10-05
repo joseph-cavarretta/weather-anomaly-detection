@@ -12,6 +12,8 @@ format:
 check:
 	uv run ruff check .
 	uv run ruff format --check .
+	uv run python ../agent-dev-harness/python-styleguide/docstring_length.py .
+	uv run mypy .
 
 build:
 	docker build -t weather-model .

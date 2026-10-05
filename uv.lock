@@ -1259,16 +1259,16 @@ wheels = [
 
 [[package]]
 name = "meteostat"
-version = "2.1.5"
+version = "1.7.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "numpy" },
     { name = "pandas" },
     { name = "pytz" },
-    { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1a/1b/f4e08a131b535e7f2a5bcfcc2fe9b5774d9670cbfccbc4c290ccf92223f2/meteostat-2.1.5.tar.gz", hash = "sha256:9a245313feb5e7b74f5be78cb9a2d2d6f700effc164c22732fc31da9782ad5fe", size = 59035, upload-time = "2026-09-17T08:11:27.378Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/1b/6167e471275417787d1d1bf518c24e3168c2b5054bcfa25f6e51dec51119/meteostat-1.7.6.tar.gz", hash = "sha256:2b83eedb21a940babe0ffa938be1471b99e55f54f8316ca92330c4eea22487bf", size = 20716, upload-time = "2025-10-07T06:16:34.325Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/25/695f01318f9fb2d4903ff9f681b9fe57cb4104d9a34dccb0f30866e3a499/meteostat-2.1.5-py3-none-any.whl", hash = "sha256:a9234959c3e9bc8f426231754198adddb1a8b7a1b9ecbabbcedbe889e7d8f93b", size = 94251, upload-time = "2026-09-17T08:11:26.143Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/11/0c73c9b733a80af11929774a0c3a7c7f4dee52a2ec3ffe9587b7a0e6deb2/meteostat-1.7.6-py3-none-any.whl", hash = "sha256:8a1d54f8d73a86f048a0a7a8c9b9aeea17126ec316ff13ef4ab2254135c43982", size = 33297, upload-time = "2025-10-07T06:16:32.876Z" },
 ]
 
 [[package]]
@@ -1587,6 +1587,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/9d/8a/1c5bd2642b450e374b6191189f47c49538fe41f82348a66de6f647e6ab59/pandas-3.0.6-cp315-cp315t-musllinux_1_2_x86_64.whl", hash = "sha256:8fe77b408d82e2615674dfed62533b95e18a03610573877422aada4f625d4947", size = 11709148, upload-time = "2026-09-17T23:23:09.082Z" },
     { url = "https://files.pythonhosted.org/packages/73/3d/1b142bd0d0f1326a5d98c91c955b923cd1e06b5eecb428cd9d8817fa01c0/pandas-3.0.6-cp315-cp315t-win_amd64.whl", hash = "sha256:83e91d15738d7783c050197cef2f2cf82fc6353dae9865aa87ed1fa16aa4d55a", size = 10161518, upload-time = "2026-09-17T23:23:12.365Z" },
     { url = "https://files.pythonhosted.org/packages/0b/a3/6419c14da2adc1f09a6a183b8f91d7494d325b287f4ca984ac04f663638a/pandas-3.0.6-cp315-cp315t-win_arm64.whl", hash = "sha256:963ca21199097a84c7827c4678b04e30833084fbf8ef44fde3fa7180a29f8fa0", size = 9364529, upload-time = "2026-09-17T23:23:15.274Z" },
+]
+
+[[package]]
+name = "pandas-stubs"
+version = "3.0.5.260914"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c1/93/8948ae6c1e1e3d6833596fd266f7be2d27c1451b8be094975ad42c5e842e/pandas_stubs-3.0.5.260914.tar.gz", hash = "sha256:3f6fc1f147f68fd89c007105e7c94a948acb4ecd7eb20dc1c02e153c4ed5c250", size = 117622, upload-time = "2026-09-14T16:42:35.065Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9a/cb/5ad79e02a556cc23fed5816de0109fa8af660c66cfa5f4af74c3e8d4cd26/pandas_stubs-3.0.5.260914-py3-none-any.whl", hash = "sha256:39a1300c5c5c55fdf609e3476805decce5d5015539a4dcb683449f8feaeee2fb", size = 177344, upload-time = "2026-09-14T16:42:33.771Z" },
 ]
 
 [[package]]
@@ -2579,6 +2591,7 @@ dependencies = [
 dev = [
     { name = "jupyter" },
     { name = "mypy" },
+    { name = "pandas-stubs" },
     { name = "pytest" },
     { name = "ruff" },
 ]
@@ -2587,7 +2600,7 @@ dev = [
 requires-dist = [
     { name = "google-cloud-storage", specifier = ">=2.17.0" },
     { name = "joblib", specifier = ">=1.4.0" },
-    { name = "meteostat", specifier = ">=1.6.5,<3" },
+    { name = "meteostat", specifier = ">=1.6.5,<2" },
     { name = "numpy", specifier = ">=2.0.0" },
     { name = "pandas", specifier = ">=2.2.0,<4" },
     { name = "pydantic", specifier = ">=2.0.0" },
@@ -2599,9 +2612,10 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "jupyter", specifier = ">=1.0.0" },
-    { name = "mypy", specifier = ">=1.0.0" },
+    { name = "mypy", specifier = ">=1.10" },
+    { name = "pandas-stubs", specifier = ">=3.0.5.260914" },
     { name = "pytest", specifier = ">=8.0.0" },
-    { name = "ruff", specifier = ">=0.4.0" },
+    { name = "ruff", specifier = ">=0.16" },
 ]
 
 [[package]]

@@ -11,7 +11,8 @@ PROJECT_DIR = _settings.weather_model_dir
 args = {
     "owner": "joe-cavarretta",
     "depend_on_past": False,
-    "start_date": datetime(2023, 1, 1),
+    # Naive on purpose: Airflow reads it in its configured default timezone.
+    "start_date": datetime(2023, 1, 1),  # noqa: DTZ001
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,

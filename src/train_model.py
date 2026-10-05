@@ -1,21 +1,29 @@
+import logging
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import joblib
-import numpy as np
 import pandas as pd
 from sklearn.ensemble import IsolationForest
 from statsmodels.tsa.seasonal import STL
+
+if TYPE_CHECKING:
+    import numpy as np
 
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 MODEL_PATH = BASE_DIR / "isolation_forest.pkl"
 
+logger = logging.getLogger(__name__)
+
 
 def main() -> None:
+    """Train the Isolation Forest on the historical data and save it."""
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     df = load_data_and_format(DATA_DIR / "weather_data_historical.csv.gz")
-    print("Training isolation forest model...")
+    logger.info("Training isolation forest model...")
     train_isolation_forest(df)
-    print("Model training complete.")
+    logger.info("Model training complete.")
 
 
 def load_data_and_format(path: Path) -> pd.DataFrame:
