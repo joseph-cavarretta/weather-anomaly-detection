@@ -1259,16 +1259,16 @@ wheels = [
 
 [[package]]
 name = "meteostat"
-version = "2.1.5"
+version = "1.7.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "numpy" },
     { name = "pandas" },
     { name = "pytz" },
-    { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1a/1b/f4e08a131b535e7f2a5bcfcc2fe9b5774d9670cbfccbc4c290ccf92223f2/meteostat-2.1.5.tar.gz", hash = "sha256:9a245313feb5e7b74f5be78cb9a2d2d6f700effc164c22732fc31da9782ad5fe", size = 59035, upload-time = "2026-09-17T08:11:27.378Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/1b/6167e471275417787d1d1bf518c24e3168c2b5054bcfa25f6e51dec51119/meteostat-1.7.6.tar.gz", hash = "sha256:2b83eedb21a940babe0ffa938be1471b99e55f54f8316ca92330c4eea22487bf", size = 20716, upload-time = "2025-10-07T06:16:34.325Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/25/695f01318f9fb2d4903ff9f681b9fe57cb4104d9a34dccb0f30866e3a499/meteostat-2.1.5-py3-none-any.whl", hash = "sha256:a9234959c3e9bc8f426231754198adddb1a8b7a1b9ecbabbcedbe889e7d8f93b", size = 94251, upload-time = "2026-09-17T08:11:26.143Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/11/0c73c9b733a80af11929774a0c3a7c7f4dee52a2ec3ffe9587b7a0e6deb2/meteostat-1.7.6-py3-none-any.whl", hash = "sha256:8a1d54f8d73a86f048a0a7a8c9b9aeea17126ec316ff13ef4ab2254135c43982", size = 33297, upload-time = "2025-10-07T06:16:32.876Z" },
 ]
 
 [[package]]
@@ -2600,7 +2600,7 @@ dev = [
 requires-dist = [
     { name = "google-cloud-storage", specifier = ">=2.17.0" },
     { name = "joblib", specifier = ">=1.4.0" },
-    { name = "meteostat", specifier = ">=1.6.5,<3" },
+    { name = "meteostat", specifier = ">=1.6.5,<2" },
     { name = "numpy", specifier = ">=2.0.0" },
     { name = "pandas", specifier = ">=2.2.0,<4" },
     { name = "pydantic", specifier = ">=2.0.0" },
