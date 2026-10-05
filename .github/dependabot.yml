@@ -8,6 +8,10 @@ updates:
     groups:
       python-deps:
         patterns: ["*"]
+    ignore:
+      # meteostat 2 removed the Daily and Stations API that src/weather_model.py uses.
+      - dependency-name: "meteostat"
+        versions: [">=2"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
