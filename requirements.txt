@@ -3,17 +3,17 @@ annotated-types==0.8.0
 certifi==2026.7.22
 cffi==2.1.1 ; platform_python_implementation != 'PyPy'
 charset-normalizer==3.5.2
-cryptography==50.0.1
-google-api-core==2.40.0
-google-auth==2.59.0
+cryptography==50.0.2
+google-api-core==2.41.0
+google-auth==2.60.0
 google-cloud-core==2.8.0
-google-cloud-storage==3.15.1
+google-cloud-storage==3.16.0
 google-crc32c==1.9.0
 google-resumable-media==2.11.0
 googleapis-common-protos==1.75.5
 idna==3.20
 joblib==1.6.0
-meteostat==1.7.6
+meteostat==2.1.5
 narwhals==2.26.0
 numpy==2.5.3
 packaging==26.3
@@ -28,8 +28,8 @@ pydantic==2.13.5
 pydantic-core==2.49.0
 pydantic-settings==2.15.0
 python-dateutil==2.9.0.post0
-python-dotenv==1.2.3
-pytz==2026.4
+python-dotenv==1.2.4
+pytz==2026.5
 requests==2.34.2
 scikit-learn==1.9.1
 scipy==1.18.1
@@ -38,5 +38,5 @@ statsmodels==0.15.0
 threadpoolctl==3.7.0
 typing-extensions==4.16.0
 typing-inspection==0.4.4
-tzdata==2026.4
+tzdata==2026.5
 urllib3==2.8.0
